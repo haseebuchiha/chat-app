@@ -68,7 +68,7 @@ services:
   mailcatcher:
     image: 'dockage/mailcatcher'
     ports:
-      - '1080:1080'
+      - '1081:1080'
     healthcheck:
       test:
         - 'CMD-SHELL'
