@@ -1,0 +1,14 @@
+.vscode
+Dockerfile
+.git
+node_modules
+.github
+Makefile
+jest.config.ts
+Procfile
+.gitignore
+Dockerfile
+*.md
+.env*
+.eslint*
+dist

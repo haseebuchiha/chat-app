@@ -1,10 +1,14 @@
 class ChatAppSchema < GraphQL::Schema
   mutation(Types::MutationType)
   query(Types::QueryType)
+  subscription(Types::SubscriptionType)
   use GraphQL::Schema::Timeout, max_seconds: 2
+  use GraphQL::Subscriptions::ActionCableSubscriptions
+  default_max_page_size 50
 
   # For batch-loading (see https://graphql-ruby.org/dataloader/overview.html)
   use GraphQL::Dataloader
+  disable_introspection_entry_points if ENV["DISABLE_GRAPHQL_INTROSPECTION"] == "true"
 
   # GraphQL-Ruby calls this when something goes wrong while running a query:
   def self.type_error(err, context)

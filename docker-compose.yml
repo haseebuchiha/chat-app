@@ -2,6 +2,8 @@ name: 'chat-app'
 services:
   db:
     image: 'postgres:14.5-alpine'
+    ports:
+      - '5430:5432'
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
@@ -20,20 +22,23 @@ services:
       test:
         - 'CMD-SHELL'
         - 'redis-cli ping'
-  app:
-    depends_on:
-      api:
-        condition: service_healthy
-    build:
-      context: ./webapp
-      dockerfile: Dockerfile
-    stdin_open: true
-    tty: true
-    environment:
-      PORT: 80
-    volumes:
-      - './webapp:/app'
-      - '/app/node_modules'
+  # app:
+  #   depends_on:
+  #     api:
+  #       condition: service_healthy
+  #   build:
+  #     context: ./webapp
+  #     dockerfile: Dockerfile
+  #   stdin_open: true
+  #   tty: true
+  #   environment:
+  #     PORT: 80
+  #   command: [ 'yarn', 'dev', '--port', '80' ]
+  #   ports:
+  #     - '8001:80'
+  #   volumes:
+  #     - './webapp:/app'
+  #     - '/app/node_modules'
   api:
     depends_on:
       db:

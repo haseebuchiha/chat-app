@@ -1,13 +1,15 @@
 module Resolvers
   class Conversations < Base
-    type [Types::ChatType], null: false
+    type Types::ConversationType.connection_type, null: false
 
     def authorized?(**args)
       return true if current_user
     end
 
     def resolve(**args)
-      current_user.conversations.order(created_at: :desc)
+      RelayActiveRecordRelationConnection.new(
+        current_user.conversations.order(updated_at: :desc)
+      )
     end
   end
 end

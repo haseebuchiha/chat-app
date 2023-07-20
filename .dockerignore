@@ -18,10 +18,11 @@ Dockerfile*
 buildspec*
 *.md
 LICENSE
+.env
+webapp/.env
 .env*
 .byebug_history
 spec
 test
 storage
 *.dump
-webapp

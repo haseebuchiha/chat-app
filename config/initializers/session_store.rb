@@ -1,0 +1,10 @@
+Rails.application.config.session_store :cache_store,
+  key: "_chat_app_session",
+  url: ENV["REDIS_URL"],
+  expire_after: Constants::DEFAULT_SESSION_EXPIRY,
+  threadsafe: true,
+  driver: :hiredis,
+  domain: ENV.fetch("DOMAIN", "localhost"),
+  secure: Rails.env.production?,
+  httponly: true,
+  same_site: Rails.env.production? ? "None" : "Lax"

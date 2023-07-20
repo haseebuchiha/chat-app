@@ -1,0 +1,44 @@
+FROM ruby:3.1.2-alpine as base
+WORKDIR /app
+RUN apk update && apk add --update --no-cache \
+  # C compiler etc
+  build-base \
+  # Support git sources in the Gemfile
+  git \
+  # Used by ActiveStorage
+  imagemagick \
+  # Dependencies for Nokogiri
+  libxml2 \
+  libxslt \
+  libxml2-dev \
+  libxslt-dev \
+  libc-dev \
+  libgcrypt-dev \
+  # Webpacker and friends
+  nodejs \
+  yarn \
+  # Timezone data for Ruby's TZInfo library
+  tzdata \
+  # Used by the pg gem
+  postgresql-dev \
+  postgresql \
+  postgresql-contrib
+ENV BUNDLE_APP_CONFIG /app/.bundle
+RUN gem install bundler:2.3.15 foreman && bundle config --local build.nokogiri --use-system-libraries && bundle config --local force_ruby_platform true && bundle config --local deployment true && bundle config --local without development:test
+RUN echo 'IRB.conf[:USE_AUTOCOMPLETE] = false' >> ~/.irbrc
+FROM base as builder
+
+COPY Gemfile* .ruby-version ./
+
+RUN bundle install
+
+FROM builder as web-builder
+COPY ./webapp/package.json ./webapp/yarn.lock ./
+RUN yarn install
+COPY ./webapp .
+RUN  yarn build
+FROM base as prod
+COPY --from=builder /app .
+COPY --from=web-builder /app/dist ./public/
+COPY . .
+CMD ["bundle", "exec", "puma"]
