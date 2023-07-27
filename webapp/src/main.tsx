@@ -1,13 +1,16 @@
+/* eslint-disable react-refresh/only-export-components */
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./env.ts";
-import Home from "./Home";
-import Login from "./Auth/Login";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ApolloProvider } from "@apollo/client";
 import { ChakraProvider } from "@chakra-ui/react";
+import loadable from "@loadable/component";
+import "./env.ts";
 import gqlClient from "./gql-client";
 import "./main.css";
+
+const Home = loadable(() => import("./Home"));
+const Login = loadable(() => import("./Auth/Login"));
 
 const router = createBrowserRouter([
   {

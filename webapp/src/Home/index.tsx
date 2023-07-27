@@ -9,14 +9,16 @@ import {
   MessageFieldsFragment,
   UserFieldsFragment,
 } from "../__gql__/graphql";
-import Messages from "./Messages";
 import ErrorAlert from "../Shared/Components/ErrorAlert";
-import NewMessage from "./NewMessage";
 import ConversationHeader from "./ConversationHeader";
 import useCurrentUser from "../Auth/hooks/useCurrentUser";
 import { useNavigate } from "react-router-dom";
 import UserAvatar from "../Shared/Components/UserAvatar";
 import useInifiteScrolling from "../Shared/hooks/useInifiniteScrolling";
+import loadable from "@loadable/component";
+
+const Messages = loadable(() => import("./Messages"));
+const NewMessage = loadable(() => import("./NewMessage"));
 
 interface ConversationType extends ConversationFieldsFragment {
   user: UserFieldsFragment;

@@ -25,7 +25,6 @@ if (window._env_.BASE_DOMAIN) {
   uri = `${window.location.protocol}//${window._env_.BASE_DOMAIN}${uri}`;
 }
 
-
 const cable = createConsumer(WSS_CLIENT_URL);
 
 const httpLink = new HttpLink({

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import GET_CONVERSATION_MESSAGES from "./messages.graphql";
 import { useQuery } from "@apollo/client";
-import { map, toString, uniqBy } from "lodash/fp";
+import { map, toString, uniqWith } from "lodash/fp";
 import Message from "../Message";
 import { Box, CircularProgress } from "@chakra-ui/react";
 import {
@@ -11,7 +11,15 @@ import {
 import ErrorAlert from "../../Shared/Components/ErrorAlert";
 import MESSAGE_WAS_POSTED_SUBSCRIPTION from "./message-posted.graphql";
 import useInifiteScrolling from "../../Shared/hooks/useInifiniteScrolling";
-
+interface Edge {
+  __typename?: "MessageEdge" | undefined;
+  node: {
+    __typename?: "Message" | undefined;
+  } & MessageFieldsFragment;
+}
+const uniqById = uniqWith(
+  (edge1: Edge, edge2: Edge) => edge1.node.id === edge2.node.id,
+);
 interface MessageProps {
   conversationId: string;
 }
@@ -41,15 +49,16 @@ const Messages: React.FC<MessageProps> = React.memo(
             if (!subscriptionData.data?.messageWasSent?.message) {
               return prev;
             }
-            const newMessage = subscriptionData.data.messageWasSent?.message;
+            const newMessage = subscriptionData.data.messageWasSent
+              ?.message as MessageFieldsFragment;
             return Object.assign({}, prev, {
               conversationMessages: {
                 ...prev.conversationMessages,
-                edges: uniqBy("id", [
+                edges: uniqById([
                   {
                     node: newMessage,
                   },
-                  ...(prev.conversationMessages?.edges || []),
+                  ...((prev.conversationMessages?.edges as Edge[]) || []),
                 ]),
               },
             });
