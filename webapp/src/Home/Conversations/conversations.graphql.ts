@@ -1,4 +1,4 @@
-import { gql } from "../__gql__/gql";
+import { gql } from "../../__gql__/gql";
 
 const GET_CONVERSATIONS = gql(`
   query conversations($first: Int, $after: String) {

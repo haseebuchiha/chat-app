@@ -1,19 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface IUseInfiniteScrolling {
-  observerTarget: React.MutableRefObject<HTMLElement | null>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fetchMore: any;
   endCursor?: string | null | undefined;
   hasNextPage?: boolean;
 }
 const useInifiteScrolling = ({
-  observerTarget,
   endCursor,
   hasNextPage,
   fetchMore,
 }: IUseInfiniteScrolling) => {
   const [loadingMore, setIsLoadinMore] = useState(false);
+  const observerTarget = useRef(null);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -43,6 +42,7 @@ const useInifiteScrolling = ({
 
   return {
     loadingMore,
+    observerTarget,
   };
 };
 

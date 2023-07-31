@@ -18,10 +18,10 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ user }) => (
     lineHeight="50px"
     overflow="hidden"
   >
-    {user.avatar ? (
-      <img src={user.avatar} alt={user.name || "img"} />
+    {user?.avatar ? (
+      <img src={user?.avatar} alt={user?.name || "img"} />
     ) : (
-      <>{user.initials}</>
+      <>{user?.initials}</>
     )}
   </Box>
 );
