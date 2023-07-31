@@ -7,6 +7,7 @@ const messageFields = gql(`
     id
     createdAt
     isAuthor
+    status
   }
 `);
 

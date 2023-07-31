@@ -1,54 +1,20 @@
-import { Box, CircularProgress, Flex, Grid, GridItem } from "@chakra-ui/react";
-import React, { useEffect, useRef } from "react";
-import GET_CONVERSATIONS from "./conversations.graphql";
-import { useQuery } from "@apollo/client";
-import Conversation from "./Conversation";
-import { first, map } from "lodash/fp";
-import {
-  ConversationFieldsFragment,
-  MessageFieldsFragment,
-  UserFieldsFragment,
-} from "../__gql__/graphql";
-import ErrorAlert from "../Shared/Components/ErrorAlert";
+import { Grid, GridItem } from "@chakra-ui/react";
+import React, { useEffect } from "react";
 import ConversationHeader from "./ConversationHeader";
 import useCurrentUser from "../Auth/hooks/useCurrentUser";
-import { useNavigate } from "react-router-dom";
-import UserAvatar from "../Shared/Components/UserAvatar";
-import useInifiteScrolling from "../Shared/hooks/useInifiniteScrolling";
+import { useNavigate, useParams } from "react-router-dom";
 import loadable from "@loadable/component";
+import ProfileHeader from "./ProfileHeader";
+import Conversations from "./Conversations";
+import Loader from "../Shared/Components/Loader";
 
 const Messages = loadable(() => import("./Messages"));
 const NewMessage = loadable(() => import("./NewMessage"));
 
-interface ConversationType extends ConversationFieldsFragment {
-  user: UserFieldsFragment;
-  message: MessageFieldsFragment;
-}
-
 const Home: React.FC = () => {
-  const { data, loading, error, fetchMore } = useQuery(GET_CONVERSATIONS, {
-    variables: {
-      first: 10,
-    },
-  });
   const navigate = useNavigate();
-  const [activeConversation, setActiveConversation] =
-    React.useState<ConversationType | null>(null);
+  const { id } = useParams();
   const { currentUser, loading: userLoading } = useCurrentUser();
-  const observerTarget = useRef(null);
-  const { loadingMore } = useInifiteScrolling({
-    hasNextPage: data?.conversations?.pageInfo.hasNextPage,
-    endCursor: data?.conversations?.pageInfo.endCursor,
-    fetchMore,
-    observerTarget,
-  });
-
-  useEffect(() => {
-    const node = first(data?.conversations?.edges)?.node as ConversationType;
-    if (node) {
-      setActiveConversation(node);
-    }
-  }, [data]);
 
   useEffect(() => {
     if (!currentUser && !userLoading && navigate) {
@@ -56,19 +22,10 @@ const Home: React.FC = () => {
     }
   }, [currentUser, navigate, userLoading]);
 
-  if (loading || userLoading) {
+  if (userLoading) {
     return (
-      <CircularProgress
-        top="50%"
-        position="fixed"
-        left="50%"
-        isIndeterminate
-        color="green.300"
-      />
+      <Loader />
     );
-  }
-  if (error) {
-    return <ErrorAlert>{error.message}</ErrorAlert>;
   }
   if (!currentUser) {
     return <></>;
@@ -76,37 +33,21 @@ const Home: React.FC = () => {
   return (
     <Grid
       templateAreas={`
-      "nav header"
-                  "nav main"
-                  "nav footer"`}
+        "nav header"
+        "nav main"
+        "nav footer"`}
       gridTemplateRows={"50px 1fr"}
-      gridTemplateColumns={"300px 1fr"}
+      gridTemplateColumns={"450px 1fr"}
       h="100%"
       gap="0"
       color="blackAlpha.700"
     >
       <GridItem pl="0" area={"nav"} overflow="scroll">
-        <Flex pl={4} flexDir="column">
-          <UserAvatar user={currentUser} />
-        </Flex>
-        {map(
-          ({ node }: { node: ConversationType }) => (
-            <Conversation
-              onClick={() => setActiveConversation(node)}
-              selected={activeConversation?.id === node.id}
-              key={`con-${node?.id}`}
-              node={node}
-            />
-          ),
-          data?.conversations?.edges,
-        )}
-        {loadingMore && <CircularProgress isIndeterminate color="green.300" />}
-        <Box ref={observerTarget} />
+        <ProfileHeader />
+        <Conversations />
       </GridItem>
       <GridItem pl="2" bg="gray.100" area={"header"}>
-        {activeConversation && (
-          <ConversationHeader conversation={activeConversation} />
-        )}
+        {id && <ConversationHeader />}
       </GridItem>
       <GridItem
         pl="0"
@@ -119,14 +60,10 @@ const Home: React.FC = () => {
         flexDirection="column-reverse"
         display="flex"
       >
-        {activeConversation && (
-          <Messages conversationId={activeConversation.id} />
-        )}
+        {id && <Messages />}
       </GridItem>
       <GridItem pl="0" area={"footer"}>
-        {activeConversation && (
-          <NewMessage conversationId={activeConversation.id} />
-        )}
+        {id && <NewMessage />}
       </GridItem>
     </Grid>
   );
