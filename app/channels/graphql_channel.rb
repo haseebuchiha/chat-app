@@ -13,7 +13,8 @@ class GraphqlChannel < ApplicationCable::Channel
       # current_user: current_user,
       # Make sure the channel is in the context
       channel: self,
-      current_user: current_user
+      current_user: current_user,
+      current_user_id: current_user&.id
     }
 
     result = ChatAppSchema.execute(

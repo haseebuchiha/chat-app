@@ -23,9 +23,7 @@ const Home: React.FC = () => {
   }, [currentUser, navigate, userLoading]);
 
   if (userLoading) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
   if (!currentUser) {
     return <></>;

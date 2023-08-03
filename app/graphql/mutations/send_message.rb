@@ -17,17 +17,16 @@ module Mutations
         status: :sent
       )
       @conversation.touch
-      sleep(1)
       ChatAppSchema.subscriptions.trigger(
         # Field name
         :message_was_sent,
         # Arguments
         {conversation_id: @conversation.id},
         # Object
-        {message: @message}
+        {message: @message},
         # This corresponds to `context[:current_organization_id]`
         # in the original subscription:
-        # scope: 100
+        scope: @conversation.user_ids.reject { |id| id == current_user.id }.first
       )
       @message
     end
