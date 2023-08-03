@@ -11,7 +11,11 @@ module Mutations
     end
 
     def resolve(**args)
-      @message = @conversation.messages.create!(body: args[:body], user: current_user)
+      @message = @conversation.messages.create!(
+        body: args[:body],
+        user: current_user,
+        status: :sent
+      )
       @conversation.touch
       ChatAppSchema.subscriptions.trigger(
         # Field name
@@ -19,10 +23,10 @@ module Mutations
         # Arguments
         {conversation_id: @conversation.id},
         # Object
-        {message: @message}
+        {message: @message},
         # This corresponds to `context[:current_organization_id]`
         # in the original subscription:
-        # scope: 100
+        scope: @conversation.user_ids.reject { |id| id == current_user.id }.first
       )
       @message
     end

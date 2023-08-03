@@ -13,9 +13,15 @@ import { MessageFieldsFragment } from "../../__gql__/graphql";
 interface FormValues {
   body?: string;
 }
-const fieldNameTemplate = template('conversationMessages:{"conversationId":"<%= id %>"}')
+const fieldNameTemplate = template(
+  'conversationMessages:{"conversationId":"<%= id %>"}',
+);
 
-type MessageRes = { __typename?: "Message" | undefined; } & { " $fragmentRefs"?: { MessageFieldsFragment: MessageFieldsFragment; } | undefined; }
+type MessageRes = { __typename?: "Message" | undefined } & {
+  " $fragmentRefs"?:
+    | { MessageFieldsFragment: MessageFieldsFragment }
+    | undefined;
+};
 
 const NewMessage: React.FC = () => {
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -46,44 +52,44 @@ const NewMessage: React.FC = () => {
               id: "optimistic",
               createdAt: new Date().toISOString(),
               isAuthor: true,
-              status: 'SENT',
+              status: "SENT",
             } as MessageRes,
-          }
+          },
         });
       }
     },
   });
   const [sendMessage, { loading }] = useMutation(SEND_MESSAGE, {
     update(cache, { data }) {
-        cache.modify({
-          fields: {
-            conversationMessages(existingMessages = {}, {storeFieldName}) {
-              if (fieldNameTemplate({id}) !== storeFieldName) {
-                return existingMessages;
-              }
-              const message = data?.sendMessage as MessageFieldsFragment;
-              const newMessageRef = cache.writeFragment({
-                data: message,
-                fragment: MESSAGE_FIELD_FRAGMENT,
-              });
-              return {
-                  ...existingMessages,
-                  edges: [
-                    {
-                      __typename: 'MessageEdge',
-                      node: newMessageRef,
-                    },
-                    ...(existingMessages?.edges || [])
-                  ]
-                };
-            },
+      cache.modify({
+        fields: {
+          conversationMessages(existingMessages = {}, { storeFieldName }) {
+            if (fieldNameTemplate({ id }) !== storeFieldName) {
+              return existingMessages;
+            }
+            const message = data?.sendMessage as MessageFieldsFragment;
+            const newMessageRef = cache.writeFragment({
+              data: message,
+              fragment: MESSAGE_FIELD_FRAGMENT,
+            });
+            return {
+              ...existingMessages,
+              edges: [
+                {
+                  __typename: "MessageEdge",
+                  node: newMessageRef,
+                },
+                ...(existingMessages?.edges || []),
+              ],
+            };
           },
-        });
+        },
+      });
     },
     onCompleted() {
       formik.setValues({ body: "" });
       inputRef.current?.focus();
-    }
+    },
   });
   const disabled = !formik.isValid || loading || !formik.touched;
 

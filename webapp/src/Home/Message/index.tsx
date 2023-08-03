@@ -20,12 +20,18 @@ const Message: React.FC<MessageProps> = ({ node, author }) => (
     flexDir="row"
   >
     <Box>{node?.body}</Box>
-    <Box alignSelf="flex-end" ml="3" fontSize="xx-small" textAlign="right" display="flex">
+    <Box
+      alignSelf="flex-end"
+      ml="3"
+      fontSize="xx-small"
+      textAlign="right"
+      display="flex"
+    >
       {dayjs(node?.createdAt).format("HH:mm A")}
       <Box ml="1" color="#8696a0">
         {node.status === "sent" && <>&#10003;</>}
         {node.status === "delivered" && <Delivered color="#8696a0" />}
-        {node.status === "read" &&  <Delivered color="#53bdeb" />}
+        {node.status === "read" && <Delivered color="#53bdeb" />}
       </Box>
     </Box>
   </Flex>
