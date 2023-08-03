@@ -11,8 +11,13 @@ module Mutations
     end
 
     def resolve(**args)
-      @message = @conversation.messages.create!(body: args[:body], user: current_user)
+      @message = @conversation.messages.create!(
+        body: args[:body],
+        user: current_user,
+        status: :sent
+      )
       @conversation.touch
+      sleep(1)
       ChatAppSchema.subscriptions.trigger(
         # Field name
         :message_was_sent,

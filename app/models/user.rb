@@ -10,4 +10,9 @@ class User < ApplicationRecord
   def conversations
     Conversation.unarchived.where("user_ids @> ARRAY[?::BIGINT]", id)
   end
+
+  def add_key(key)
+    keys << key
+    save!
+  end
 end
