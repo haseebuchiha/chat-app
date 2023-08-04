@@ -10,9 +10,7 @@ const conversationFields = gql(`
       ...UserFields
     }
     message {
-      id
-      body
-      createdAt
+      ...MessageFields
     }
   }
   `);

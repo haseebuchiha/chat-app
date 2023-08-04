@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_31_213342) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_04_142817) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -50,6 +50,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_31_213342) do
     t.index ["user_ids"], name: "index_conversations_on_user_ids", where: "(archived_at IS NULL)", using: :gin
   end
 
+  create_table "devices", force: :cascade do |t|
+    t.string "name"
+    t.text "key"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_devices_on_key", unique: true
+    t.index ["user_id"], name: "index_devices_on_user_id"
+  end
+
   create_table "messages", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "conversation_id", null: false
@@ -84,7 +94,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_31_213342) do
     t.datetime "locked_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "keys", default: [], null: false, array: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

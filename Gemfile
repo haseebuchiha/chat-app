@@ -53,3 +53,5 @@ gem "graphql"
 
 gem "aws-sdk-s3"
 gem "down", require: false
+
+gem "lograge", "~> 0.13.0"

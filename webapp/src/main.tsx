@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
@@ -22,19 +21,15 @@ const router = createMemoryRouter([
     path: "/login",
     Component: loadable(() => import("./Auth/Login")),
   },
-  // {
-  //   path: "/settings",
-  //   children: [
-  //     {
-  //       path: "profile",
-  //       Component: loadable(() => import("./Settings/Profile")),
-  //     },
-  //     {
-  //       path: "keys",
-  //       Component: loadable(() => import("./Settings/Keys")),
-  //     }
-  //   ],
-  // },
+  {
+    path: "/settings",
+    children: [
+      {
+        path: "profile",
+        Component: loadable(() => import("./Settings/Profile")),
+      },
+    ],
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

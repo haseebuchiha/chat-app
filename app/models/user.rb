@@ -6,13 +6,9 @@ class User < ApplicationRecord
 
   has_many :messages, dependent: :destroy
   has_one_attached :avatar
+  has_many :devices, dependent: :destroy
 
   def conversations
     Conversation.unarchived.where("user_ids @> ARRAY[?::BIGINT]", id)
-  end
-
-  def add_key(key)
-    keys << key
-    save!
   end
 end

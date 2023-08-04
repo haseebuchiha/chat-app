@@ -115,6 +115,8 @@ export type Mutation = {
   __typename?: "Mutation";
   /** Logs in a user */
   login?: Maybe<LoginPayload>;
+  /** Registers a new device for a user */
+  registerDevice: Scalars["Boolean"]["output"];
   /** Sends a new message to a conversation */
   sendMessage?: Maybe<Message>;
 };
@@ -122,6 +124,11 @@ export type Mutation = {
 export type MutationLoginArgs = {
   email: Scalars["String"]["input"];
   password?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+export type MutationRegisterDeviceArgs = {
+  key: Scalars["String"]["input"];
+  name: Scalars["String"]["input"];
 };
 
 export type MutationSendMessageArgs = {
@@ -148,10 +155,14 @@ export type Query = {
   conversationMessages?: Maybe<MessageConnection>;
   /** Returns the user for a conversation */
   conversationUser?: Maybe<User>;
+  /** Returns a list of all user keys for a conversation */
+  conversationUserKeys?: Maybe<Array<Scalars["String"]["output"]>>;
   /** Returns a list of all conversations for the current user */
   conversations?: Maybe<ConversationConnection>;
   /** Returns the current user */
   currentUser?: Maybe<User>;
+  /** Returns whether a user has a key */
+  userHasKey?: Maybe<Scalars["Boolean"]["output"]>;
 };
 
 export type QueryConversationMessagesArgs = {
@@ -166,11 +177,19 @@ export type QueryConversationUserArgs = {
   id: Scalars["ID"]["input"];
 };
 
+export type QueryConversationUserKeysArgs = {
+  id: Scalars["ID"]["input"];
+};
+
 export type QueryConversationsArgs = {
   after?: InputMaybe<Scalars["String"]["input"]>;
   before?: InputMaybe<Scalars["String"]["input"]>;
   first?: InputMaybe<Scalars["Int"]["input"]>;
   last?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+export type QueryUserHasKeyArgs = {
+  key: Scalars["String"]["input"];
 };
 
 export type Subscription = {
@@ -302,6 +321,15 @@ export type ConversationMessagesQuery = {
   } | null;
 };
 
+export type ConversationUserKeysQueryVariables = Exact<{
+  id: Scalars["ID"]["input"];
+}>;
+
+export type ConversationUserKeysQuery = {
+  __typename?: "Query";
+  conversationUserKeys?: Array<string> | null;
+};
+
 export type SendMessageMutationVariables = Exact<{
   conversationId: Scalars["ID"]["input"];
   body: Scalars["String"]["input"];
@@ -324,12 +352,11 @@ export type ConversationFieldsFragment = {
   user: { __typename?: "User" } & {
     " $fragmentRefs"?: { UserFieldsFragment: UserFieldsFragment };
   };
-  message?: {
-    __typename?: "Message";
-    id: string;
-    body: string;
-    createdAt: any;
-  } | null;
+  message?:
+    | ({ __typename?: "Message" } & {
+        " $fragmentRefs"?: { MessageFieldsFragment: MessageFieldsFragment };
+      })
+    | null;
 } & { " $fragmentName"?: "ConversationFieldsFragment" };
 
 export type MessageFieldsFragment = {
@@ -348,6 +375,25 @@ export type UserFieldsFragment = {
   avatar?: string | null;
   initials: string;
 } & { " $fragmentName"?: "UserFieldsFragment" };
+
+export type RegisterDeviceMutationVariables = Exact<{
+  name: Scalars["String"]["input"];
+  key: Scalars["String"]["input"];
+}>;
+
+export type RegisterDeviceMutation = {
+  __typename?: "Mutation";
+  registerDevice: boolean;
+};
+
+export type UserHasKeyQueryVariables = Exact<{
+  key: Scalars["String"]["input"];
+}>;
+
+export type UserHasKeyQuery = {
+  __typename?: "Query";
+  userHasKey?: boolean | null;
+};
 
 export const UserFieldsFragmentDoc = {
   kind: "Document",
@@ -371,6 +417,29 @@ export const UserFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<UserFieldsFragment, unknown>;
+export const MessageFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "MessageFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Message" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "body" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "isAuthor" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<MessageFieldsFragment, unknown>;
 export const ConversationFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -406,9 +475,10 @@ export const ConversationFieldsFragmentDoc = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "body" } },
-                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "MessageFields" },
+                },
               ],
             },
           },
@@ -432,11 +502,6 @@ export const ConversationFieldsFragmentDoc = {
         ],
       },
     },
-  ],
-} as unknown as DocumentNode<ConversationFieldsFragment, unknown>;
-export const MessageFieldsFragmentDoc = {
-  kind: "Document",
-  definitions: [
     {
       kind: "FragmentDefinition",
       name: { kind: "Name", value: "MessageFields" },
@@ -456,7 +521,7 @@ export const MessageFieldsFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<MessageFieldsFragment, unknown>;
+} as unknown as DocumentNode<ConversationFieldsFragment, unknown>;
 export const LoginDocument = {
   kind: "Document",
   definitions: [
@@ -787,6 +852,24 @@ export const ConversationsDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "MessageFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Message" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "body" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "isAuthor" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "ConversationFields" },
       typeCondition: {
         kind: "NamedType",
@@ -817,9 +900,10 @@ export const ConversationsDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "body" } },
-                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "MessageFields" },
+                },
               ],
             },
           },
@@ -1048,6 +1132,48 @@ export const ConversationMessagesDocument = {
   ConversationMessagesQuery,
   ConversationMessagesQueryVariables
 >;
+export const ConversationUserKeysDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "conversationUserKeys" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "conversationUserKeys" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "id" },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  ConversationUserKeysQuery,
+  ConversationUserKeysQueryVariables
+>;
 export const SendMessageDocument = {
   kind: "Document",
   definitions: [
@@ -1136,3 +1262,109 @@ export const SendMessageDocument = {
     },
   ],
 } as unknown as DocumentNode<SendMessageMutation, SendMessageMutationVariables>;
+export const RegisterDeviceDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "registerDevice" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "key" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "registerDevice" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "name" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "name" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "key" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "key" },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  RegisterDeviceMutation,
+  RegisterDeviceMutationVariables
+>;
+export const UserHasKeyDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "userHasKey" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "key" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "userHasKey" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "key" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "key" },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UserHasKeyQuery, UserHasKeyQueryVariables>;

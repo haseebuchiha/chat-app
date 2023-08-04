@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { Box, Flex, Input } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import React from "react";
@@ -9,6 +9,8 @@ import { isEmpty, template, trim } from "lodash/fp";
 import { useParams } from "react-router-dom";
 import MESSAGE_FIELD_FRAGMENT from "../../Shared/gql/message-fields.graphql";
 import { MessageFieldsFragment } from "../../__gql__/graphql";
+import { encrypt } from "../../Shared/utils/pgp-util";
+import GET_CONVERSATION_USER_KEYS from "./conversation-user-keys.graphql";
 
 interface FormValues {
   body?: string;
@@ -26,6 +28,15 @@ type MessageRes = { __typename?: "Message" | undefined } & {
 const NewMessage: React.FC = () => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const { id } = useParams();
+  const { data: { conversationUserKeys } = {} } = useQuery(
+    GET_CONVERSATION_USER_KEYS,
+    {
+      variables: {
+        id: id || "",
+      },
+      skip: !id,
+    },
+  );
 
   const formik = useFormik({
     initialValues: {
@@ -40,21 +51,23 @@ const NewMessage: React.FC = () => {
     },
     onSubmit: (values) => {
       if (id) {
-        sendMessage({
-          variables: {
-            conversationId: id,
-            body: values.body,
-          },
-          optimisticResponse: {
-            sendMessage: {
-              __typename: "Message",
-              body: formik.values.body,
-              id: "optimistic",
-              createdAt: new Date().toISOString(),
-              isAuthor: true,
-              status: "SENT",
-            } as MessageRes,
-          },
+        encrypt(conversationUserKeys || [], values.body).then((encrypted) => {
+          sendMessage({
+            variables: {
+              conversationId: id,
+              body: encrypted,
+            },
+            optimisticResponse: {
+              sendMessage: {
+                __typename: "Message",
+                body: encrypted,
+                id: "optimistic",
+                createdAt: new Date().toISOString(),
+                isAuthor: true,
+                status: "SENT",
+              } as MessageRes,
+            },
+          });
         });
       }
     },

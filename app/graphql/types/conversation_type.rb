@@ -7,7 +7,7 @@ module Types
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
 
     def message
-      object.messages.first
+      object.messages.last
     end
 
     def user

@@ -7,6 +7,7 @@ import loadable from "@loadable/component";
 import ProfileHeader from "./ProfileHeader";
 import Conversations from "./Conversations";
 import Loader from "../Shared/Components/Loader";
+import useRegisterDevice from "../Shared/hooks/useRegisterDevice";
 
 const Messages = loadable(() => import("./Messages"));
 const NewMessage = loadable(() => import("./NewMessage"));
@@ -15,6 +16,7 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { currentUser, loading: userLoading } = useCurrentUser();
+  const { registered } = useRegisterDevice();
 
   useEffect(() => {
     if (!currentUser && !userLoading && navigate) {
@@ -22,7 +24,7 @@ const Home: React.FC = () => {
     }
   }, [currentUser, navigate, userLoading]);
 
-  if (userLoading) {
+  if (userLoading || !registered) {
     return <Loader />;
   }
   if (!currentUser) {
