@@ -29,23 +29,6 @@ User.insert_all([{
   encrypted_password: User.new.send(:password_digest, "password")
 }], unique_by: :email, record_timestamps: true)
 Conversation.insert_all([{user_ids: [User.first.id, User.second.id]}, {user_ids: [User.first.id, User.third.id]}], record_timestamps: true)
-Message.insert_all([{
-  user_id: User.first.id,
-  conversation_id: Conversation.first.id,
-  body: "Hi"
-}, {
-  user_id: User.second.id,
-  conversation_id: Conversation.first.id,
-  body: "Hello"
-}, {
-  user_id: User.third.id,
-  conversation_id: Conversation.second.id,
-  body: "Hi"
-}, {
-  user_id: User.first.id,
-  conversation_id: Conversation.second.id,
-  body: "Yola!!!"
-}], record_timestamps: true)
 User.all.each.with_index do |u, i|
   image = Down.download("https://i.pravatar.cc/150?img=#{i}")
   u.avatar.attach(io: image, filename: image.original_filename, content_type: image.content_type)

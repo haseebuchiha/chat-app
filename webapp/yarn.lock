@@ -2151,6 +2151,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@openpgp/web-stream-tools@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@openpgp/web-stream-tools/-/web-stream-tools-0.0.14.tgz#513214cd2a20903558448980085155752be445e4"
+  integrity sha512-6btCNVf6YSsmlyIS7yw+IbzXeXCEcJxeSpxvSxkDuZj9B/ekt4fXkZj4oOaIxG4SKTftIK1svnlVroJ1cCMT4g==
+
 "@parcel/watcher-android-arm64@2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@parcel/watcher-android-arm64/-/watcher-android-arm64-2.2.0.tgz#3d1a71f251ba829ab884dfe119cc4f4c49c7222b"
