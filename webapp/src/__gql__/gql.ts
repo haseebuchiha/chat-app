@@ -29,6 +29,11 @@ const documents = {
     types.ConversationUserKeysDocument,
   "\n  mutation sendMessage($conversationId: ID!, $body: String!) {\n    sendMessage(conversationId: $conversationId, body: $body) {\n      ...MessageFields\n    }\n  }\n":
     types.SendMessageDocument,
+  "\n  mutation Logout {\n    logout\n}": types.LogoutDocument,
+  "\n  mutation startConversation($userId: ID!) {\n    startConversation(userId: $userId) {\n      id\n    }\n  }\n":
+    types.StartConversationDocument,
+  "\n  query users($first: Int, $after: String, $query: String) {\n    users(first: $first, after: $after, query: $query) {\n      edges {\n        node {\n          ...UserFields\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n":
+    types.UsersDocument,
   "\n  fragment ConversationFields on Conversation {\n    id\n    createdAt\n    updatedAt\n    user {\n      ...UserFields\n    }\n    message {\n      ...MessageFields\n    }\n  }\n  ":
     types.ConversationFieldsFragmentDoc,
   "\n  fragment MessageFields on Message {\n    body\n    id\n    createdAt\n    isAuthor\n    status\n  }\n":
@@ -103,6 +108,24 @@ export function gql(
 export function gql(
   source: "\n  mutation sendMessage($conversationId: ID!, $body: String!) {\n    sendMessage(conversationId: $conversationId, body: $body) {\n      ...MessageFields\n    }\n  }\n",
 ): (typeof documents)["\n  mutation sendMessage($conversationId: ID!, $body: String!) {\n    sendMessage(conversationId: $conversationId, body: $body) {\n      ...MessageFields\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: "\n  mutation Logout {\n    logout\n}",
+): (typeof documents)["\n  mutation Logout {\n    logout\n}"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: "\n  mutation startConversation($userId: ID!) {\n    startConversation(userId: $userId) {\n      id\n    }\n  }\n",
+): (typeof documents)["\n  mutation startConversation($userId: ID!) {\n    startConversation(userId: $userId) {\n      id\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: "\n  query users($first: Int, $after: String, $query: String) {\n    users(first: $first, after: $after, query: $query) {\n      edges {\n        node {\n          ...UserFields\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n",
+): (typeof documents)["\n  query users($first: Int, $after: String, $query: String) {\n    users(first: $first, after: $after, query: $query) {\n      edges {\n        node {\n          ...UserFields\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

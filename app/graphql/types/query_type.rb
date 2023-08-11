@@ -12,5 +12,6 @@ module Types
     field :current_user, resolver: Resolvers::CurrentUser, null: true, description: "Returns the current user"
     field :conversation_user_keys, resolver: Resolvers::ConversationUserKeys, null: true, description: "Returns a list of all user keys for a conversation"
     field :user_has_key, resolver: Resolvers::UserHasKey, null: true, description: "Returns whether a user has a key"
+    field :users, resolver: Resolvers::Users, null: true, description: "Returns a list of all users"
   end
 end

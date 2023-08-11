@@ -11,7 +11,8 @@ class GraphqlController < ApplicationController
     context = {
       # Query context goes here, for example:
       current_user: current_user,
-      sign_in: ->(user) { sign_in(user) }
+      sign_in: ->(user) { sign_in(user) },
+      sign_out: ->(user) { sign_out(user) }
     }
     result = ChatAppSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result

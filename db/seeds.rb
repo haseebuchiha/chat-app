@@ -28,7 +28,6 @@ User.insert_all([{
   confirmed_at: Time.now,
   encrypted_password: User.new.send(:password_digest, "password")
 }], unique_by: :email, record_timestamps: true)
-Conversation.insert_all([{user_ids: [User.first.id, User.second.id]}, {user_ids: [User.first.id, User.third.id]}], record_timestamps: true)
 User.all.each.with_index do |u, i|
   image = Down.download("https://i.pravatar.cc/150?img=#{i}")
   u.avatar.attach(io: image, filename: image.original_filename, content_type: image.content_type)

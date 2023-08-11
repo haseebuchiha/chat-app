@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { ApolloProvider } from "@apollo/client";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import loadable from "@loadable/component";
 import "./env.ts";
 import gqlClient from "./gql-client";
@@ -32,9 +32,17 @@ const router = createMemoryRouter([
   },
 ]);
 
+const theme = extendTheme({
+  colors: {
+    listBorder: {
+      light: "#ccc",
+    },
+  },
+});
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <ApolloProvider client={gqlClient}>
         <RouterProvider router={router} />
       </ApolloProvider>
