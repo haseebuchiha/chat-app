@@ -115,10 +115,14 @@ export type Mutation = {
   __typename?: "Mutation";
   /** Logs in a user */
   login?: Maybe<LoginPayload>;
+  /** Logs out a user */
+  logout: Scalars["Boolean"]["output"];
   /** Registers a new device for a user */
   registerDevice: Scalars["Boolean"]["output"];
   /** Sends a new message to a conversation */
   sendMessage?: Maybe<Message>;
+  /** Starts a new conversation */
+  startConversation: Conversation;
 };
 
 export type MutationLoginArgs = {
@@ -134,6 +138,10 @@ export type MutationRegisterDeviceArgs = {
 export type MutationSendMessageArgs = {
   body: Scalars["String"]["input"];
   conversationId: Scalars["ID"]["input"];
+};
+
+export type MutationStartConversationArgs = {
+  userId: Scalars["ID"]["input"];
 };
 
 /** Information about pagination in a connection. */
@@ -163,6 +171,8 @@ export type Query = {
   currentUser?: Maybe<User>;
   /** Returns whether a user has a key */
   userHasKey?: Maybe<Scalars["Boolean"]["output"]>;
+  /** Returns a list of all users */
+  users?: Maybe<UserConnection>;
 };
 
 export type QueryConversationMessagesArgs = {
@@ -192,6 +202,14 @@ export type QueryUserHasKeyArgs = {
   key: Scalars["String"]["input"];
 };
 
+export type QueryUsersArgs = {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  query?: InputMaybe<Scalars["String"]["input"]>;
+};
+
 export type Subscription = {
   __typename?: "Subscription";
   /** A message was sent */
@@ -209,6 +227,26 @@ export type User = {
   id: Scalars["ID"]["output"];
   initials: Scalars["String"]["output"];
   name?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** The connection type for User. */
+export type UserConnection = {
+  __typename?: "UserConnection";
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<UserEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<User>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type UserEdge = {
+  __typename?: "UserEdge";
+  /** A cursor for use in pagination. */
+  cursor: Scalars["String"]["output"];
+  /** The item at the end of the edge. */
+  node?: Maybe<User>;
 };
 
 export type LoginMutationVariables = Exact<{
@@ -342,6 +380,45 @@ export type SendMessageMutation = {
         " $fragmentRefs"?: { MessageFieldsFragment: MessageFieldsFragment };
       })
     | null;
+};
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never }>;
+
+export type LogoutMutation = { __typename?: "Mutation"; logout: boolean };
+
+export type StartConversationMutationVariables = Exact<{
+  userId: Scalars["ID"]["input"];
+}>;
+
+export type StartConversationMutation = {
+  __typename?: "Mutation";
+  startConversation: { __typename?: "Conversation"; id: string };
+};
+
+export type UsersQueryVariables = Exact<{
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  query?: InputMaybe<Scalars["String"]["input"]>;
+}>;
+
+export type UsersQuery = {
+  __typename?: "Query";
+  users?: {
+    __typename?: "UserConnection";
+    edges?: Array<{
+      __typename?: "UserEdge";
+      node?:
+        | ({ __typename?: "User" } & {
+            " $fragmentRefs"?: { UserFieldsFragment: UserFieldsFragment };
+          })
+        | null;
+    } | null> | null;
+    pageInfo: {
+      __typename?: "PageInfo";
+      endCursor?: string | null;
+      hasNextPage: boolean;
+    };
+  } | null;
 };
 
 export type ConversationFieldsFragment = {
@@ -1262,6 +1339,205 @@ export const SendMessageDocument = {
     },
   ],
 } as unknown as DocumentNode<SendMessageMutation, SendMessageMutationVariables>;
+export const LogoutDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "Logout" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "logout" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<LogoutMutation, LogoutMutationVariables>;
+export const StartConversationDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "startConversation" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "userId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "startConversation" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "userId" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "userId" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  StartConversationMutation,
+  StartConversationMutationVariables
+>;
+export const UsersDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "users" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "first" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "after" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "query" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "users" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "first" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "first" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "after" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "after" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "query" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "query" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "edges" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "node" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "FragmentSpread",
+                              name: { kind: "Name", value: "UserFields" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "pageInfo" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "endCursor" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "hasNextPage" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "User" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "avatar" } },
+          { kind: "Field", name: { kind: "Name", value: "initials" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UsersQuery, UsersQueryVariables>;
 export const RegisterDeviceDocument = {
   kind: "Document",
   definitions: [

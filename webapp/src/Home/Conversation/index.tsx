@@ -45,7 +45,8 @@ const Conversation: React.FC<ConversationProps> = ({
       flexDirection="row"
       key={node?.id}
       padding={3}
-      borderBottom="1px solid #ccc"
+      borderBottom="1px solid"
+      borderBottomColor="listBorder.light"
     >
       <Box
         width="50px"

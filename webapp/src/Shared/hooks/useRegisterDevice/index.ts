@@ -11,6 +11,10 @@ const useRegisterDevice = () => {
     onCompleted() {
       setRegistered(true);
     },
+    onError(e) {
+      alert(e.message);
+      setRegistered(false);
+    },
   });
   const [registered, setRegistered] = useState(false);
   useEffect(() => {

@@ -54,6 +54,7 @@ const client = new ApolloClient({
         fields: {
           conversationMessages: relayStylePagination(["conversationId"]),
           conversations: relayStylePagination(),
+          users: relayStylePagination(),
         },
       },
     },

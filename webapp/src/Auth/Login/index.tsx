@@ -73,6 +73,7 @@ const Login: React.FC = () => {
             </Checkbox>
             <Button
               disabled={formik.isSubmitting || loading}
+              isLoading={formik.isSubmitting || loading}
               type="submit"
               colorScheme="purple"
               width="full"
