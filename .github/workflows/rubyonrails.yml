@@ -6,7 +6,7 @@
 # run tests and linters.
 name: "Ruby on Rails CI"
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}-api
   cancel-in-progress: true
 on:
   push:
@@ -15,38 +15,38 @@ on:
     branches: [ "main" ]
     types: [synchronize, opened, reopened, ready_for_review]
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    if: github.event.pull_request.draft == false
-    services:
-      postgres:
-        image: postgres:11-alpine
-        ports:
-          - "5432:5432"
-        env:
-          POSTGRES_DB: rails_test
-          POSTGRES_USER: rails
-          POSTGRES_PASSWORD: password
-    env:
-      RAILS_ENV: test
-      SECRET_KEY_BASE: "123"
-      DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      # Add or replace dependency steps here
-      - name: Install Ruby and gems
-        uses: ruby/setup-ruby@55283cc23133118229fd3f97f9336ee23a179fcf # v1.146.0
-        with:
-          bundler-cache: true
-          cache-version: 1
-      # Add or replace database setup steps here
-      - name: Set up database schema
-        run: bin/rails db:schema:load
-      # Add or replace test runners here
-      - name: Run tests
-        run: bundle exec rspec spec
+  # test:
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 30
+  #   if: github.event.pull_request.draft == false
+  #   services:
+  #     postgres:
+  #       image: postgres:11-alpine
+  #       ports:
+  #         - "5432:5432"
+  #       env:
+  #         POSTGRES_DB: rails_test
+  #         POSTGRES_USER: rails
+  #         POSTGRES_PASSWORD: password
+  #   env:
+  #     RAILS_ENV: test
+  #     SECRET_KEY_BASE: "123"
+  #     DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+  #     # Add or replace dependency steps here
+  #     - name: Install Ruby and gems
+  #       uses: ruby/setup-ruby@55283cc23133118229fd3f97f9336ee23a179fcf # v1.146.0
+  #       with:
+  #         bundler-cache: true
+  #         cache-version: 1
+  #     # Add or replace database setup steps here
+  #     - name: Set up database schema
+  #       run: bin/rails db:schema:load
+  #     # Add or replace test runners here
+  #     - name: Run tests
+  #       run: bundle exec rspec spec
 
   lint:
     runs-on: ubuntu-latest

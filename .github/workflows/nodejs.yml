@@ -3,7 +3,7 @@
 
 name: Web App CI
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}-webapp
   cancel-in-progress: true
 defaults:
   run:
