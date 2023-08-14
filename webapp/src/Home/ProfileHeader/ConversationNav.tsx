@@ -21,7 +21,7 @@ const ConversationNav: React.FC = () => {
   const { currentUser } = useCurrentUser();
   const [logout] = useMutation(LOGOUT_MUTATION, {
     onCompleted() {
-      deleteKey()
+      deleteKey();
       window.location.reload();
     },
   });
@@ -55,7 +55,7 @@ const ConversationNav: React.FC = () => {
             <MenuItem onClick={() => leftNavVar("profile")}>Profile</MenuItem>
             <MenuItem
               onClick={() => {
-                logout({ variables: {key: getKey()?.publicKey || ''} });
+                logout({ variables: { key: getKey()?.publicKey || "" } });
               }}
             >
               Logout
