@@ -4,6 +4,7 @@ import { MessageFieldsFragment } from "../../__gql__/graphql";
 import dayjs from "dayjs";
 import Delivered from "./Delivered";
 import { decryptText } from "../../Shared/utils/pgp-util";
+import Sent from "./Sent";
 
 interface MessageProps {
   node: MessageFieldsFragment;
@@ -48,7 +49,7 @@ const Message: React.FC<MessageProps> = ({ node, author }) => {
       >
         {dayjs(message?.createdAt).format("HH:mm A")}
         <Box ml="1" color="#8696a0">
-          {message?.status === "sent" && <>&#10003;</>}
+          {message?.status === "sent" && <Sent />}
           {message?.status === "delivered" && <Delivered color="#8696a0" />}
           {message?.status === "read" && <Delivered color="#53bdeb" />}
         </Box>

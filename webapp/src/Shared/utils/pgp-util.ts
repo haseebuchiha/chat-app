@@ -44,6 +44,14 @@ export const getKey = (): Key | undefined => {
   return key;
 };
 
+export const deleteKey = () => {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    console.error("Invalid key");
+  }
+};
+
 export const encrypt = async (keys: string[], text: string) => {
   await loadPGP();
   const encryptionKeys = await Promise.all(

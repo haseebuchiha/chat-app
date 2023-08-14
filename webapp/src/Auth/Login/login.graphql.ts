@@ -1,6 +1,6 @@
 import { gql } from "../../__gql__";
 
-const LOGIN = gql(`
+const LOGIN_MUTATION = gql(`
   mutation login($email: String!, $password: String) {
     login(email: $email, password: $password) {
       user {
@@ -11,4 +11,4 @@ const LOGIN = gql(`
   }
 `);
 
-export default LOGIN;
+export default LOGIN_MUTATION;

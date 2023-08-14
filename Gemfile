@@ -57,3 +57,5 @@ gem "down", require: false
 gem "lograge", "~> 0.13.0"
 
 gem "pg_search", "~> 2.3"
+
+gem "rack-attack", "~> 6.7"

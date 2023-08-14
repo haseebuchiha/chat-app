@@ -60,7 +60,7 @@ const Home: React.FC = () => {
         pl="0"
         area="main"
         position="relative"
-        bg="#fdf6e7"
+        bg="bg.light"
         alignItems="flex-start"
         overflow="auto"
         height="100%"

@@ -15,11 +15,13 @@ import { leftNavVar } from "../../Shared/reactive-vars";
 import WriteIcon from "./WriteIcon";
 import { useMutation } from "@apollo/client";
 import LOGOUT_MUTATION from "./logout.graphql";
+import { deleteKey, getKey } from "../../Shared/utils/pgp-util";
 
 const ConversationNav: React.FC = () => {
   const { currentUser } = useCurrentUser();
   const [logout] = useMutation(LOGOUT_MUTATION, {
     onCompleted() {
+      deleteKey()
       window.location.reload();
     },
   });
@@ -53,7 +55,7 @@ const ConversationNav: React.FC = () => {
             <MenuItem onClick={() => leftNavVar("profile")}>Profile</MenuItem>
             <MenuItem
               onClick={() => {
-                logout();
+                logout({ variables: {key: getKey()?.publicKey || ''} });
               }}
             >
               Logout

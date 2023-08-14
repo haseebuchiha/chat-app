@@ -1,6 +1,6 @@
 import { gql } from "../../__gql__";
 
-const userFields = gql(`
+const USER_FIELDS_FRAGMENT = gql(`
   fragment UserFields on User {
     id
     name
@@ -9,4 +9,4 @@ const userFields = gql(`
 }
 `);
 
-export default userFields;
+export default USER_FIELDS_FRAGMENT;
