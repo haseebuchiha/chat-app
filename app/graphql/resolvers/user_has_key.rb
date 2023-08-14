@@ -7,8 +7,8 @@ module Resolvers
       current_user.present?
     end
 
-    def resolve(id:)
-      current_user.devices.where(key: args[:key]).exists?
+    def resolve(key:)
+      current_user.devices.where(key: key).exists?
     end
   end
 end

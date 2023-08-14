@@ -50,8 +50,8 @@ const NewMessage: React.FC = () => {
       return errors;
     },
     onSubmit: (values) => {
-      if (id) {
-        encrypt(conversationUserKeys || [], values.body).then((encrypted) => {
+      if (id && conversationUserKeys) {
+        encrypt(conversationUserKeys, values.body).then((encrypted) => {
           sendMessage({
             variables: {
               conversationId: id,

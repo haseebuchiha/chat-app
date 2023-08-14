@@ -1,6 +1,6 @@
 import { gql } from "../../__gql__/gql";
 
-const GET_CONVERSATION_USER = gql(`
+const GET_CONVERSATION_USER_QUERY = gql(`
   query conversationUser($id: ID!) {
     conversationUser(id: $id) {
       ...UserFields
@@ -8,4 +8,4 @@ const GET_CONVERSATION_USER = gql(`
   }
 `);
 
-export default GET_CONVERSATION_USER;
+export default GET_CONVERSATION_USER_QUERY;

@@ -1,6 +1,6 @@
 import { gql } from "../../__gql__/gql";
 
-const GET_CONVERSATION_MESSAGES = gql(`
+const GET_CONVERSATION_MESSAGES_QUERY = gql(`
   query conversationMessages($conversationId: ID!, $first: Int, $after: String) {
     conversationMessages(conversationId: $conversationId, first: $first, after: $after) {
       edges {
@@ -16,4 +16,4 @@ const GET_CONVERSATION_MESSAGES = gql(`
   }
 `);
 
-export default GET_CONVERSATION_MESSAGES;
+export default GET_CONVERSATION_MESSAGES_QUERY;

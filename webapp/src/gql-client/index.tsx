@@ -10,6 +10,7 @@ import { createConsumer } from "@rails/actioncable";
 import { OperationDefinitionNode } from "graphql";
 import ActionCableLink from "graphql-ruby-client/subscriptions/ActionCableLink";
 import { some } from "lodash/fp";
+import "../env";
 
 let WSS_CLIENT_URL = "/cable";
 if (window._env_.BASE_DOMAIN) {

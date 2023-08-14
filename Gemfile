@@ -39,6 +39,8 @@ gem "image_processing", "~> 1.2"
 gem "rack-cors"
 
 group :development, :test do
+  gem "bundler-audit", require: false
+  gem "brakeman", require: false
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri mingw x64_mingw]
 end
@@ -57,3 +59,5 @@ gem "down", require: false
 gem "lograge", "~> 0.13.0"
 
 gem "pg_search", "~> 2.3"
+
+gem "rack-attack", "~> 6.7"

@@ -1,6 +1,6 @@
 import { gql } from "../../__gql__/gql";
 
-const GET_CONVERSATIONS = gql(`
+const GET_CONVERSATIONS_QUERY = gql(`
   query conversations($first: Int, $after: String) {
     conversations(first: $first, after: $after) {
       edges {
@@ -16,4 +16,4 @@ const GET_CONVERSATIONS = gql(`
   }
 `);
 
-export default GET_CONVERSATIONS;
+export default GET_CONVERSATIONS_QUERY;

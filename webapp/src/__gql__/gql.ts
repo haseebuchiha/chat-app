@@ -15,6 +15,8 @@ import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/
 const documents = {
   "\n  mutation login($email: String!, $password: String) {\n    login(email: $email, password: $password) {\n      user {\n        ...UserFields\n        email\n      }\n    }\n  }\n":
     types.LoginDocument,
+  "\n  mutation signUp($email: String!, $password: String!, $passwordConfirmation: String!, $firstname: String!, $lastname: String!) {\n    signUp(email: $email, password: $password, passwordConfirmation: $passwordConfirmation, firstname: $firstname, lastname: $lastname) {\n      message\n    }\n  }\n":
+    types.SignUpDocument,
   "\n  query currentUser {\n    currentUser {\n      ...UserFields\n      email\n    }\n  }\n":
     types.CurrentUserDocument,
   "\n  query conversationUser($id: ID!) {\n    conversationUser(id: $id) {\n      ...UserFields\n    }\n  }\n":
@@ -29,7 +31,8 @@ const documents = {
     types.ConversationUserKeysDocument,
   "\n  mutation sendMessage($conversationId: ID!, $body: String!) {\n    sendMessage(conversationId: $conversationId, body: $body) {\n      ...MessageFields\n    }\n  }\n":
     types.SendMessageDocument,
-  "\n  mutation Logout {\n    logout\n}": types.LogoutDocument,
+  "\n  mutation logout($key: String!) {\n    logout(key: $key)\n}":
+    types.LogoutDocument,
   "\n  mutation startConversation($userId: ID!) {\n    startConversation(userId: $userId) {\n      id\n    }\n  }\n":
     types.StartConversationDocument,
   "\n  query users($first: Int, $after: String, $query: String) {\n    users(first: $first, after: $after, query: $query) {\n      edges {\n        node {\n          ...UserFields\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n":
@@ -66,6 +69,12 @@ export function gql(source: string): unknown;
 export function gql(
   source: "\n  mutation login($email: String!, $password: String) {\n    login(email: $email, password: $password) {\n      user {\n        ...UserFields\n        email\n      }\n    }\n  }\n",
 ): (typeof documents)["\n  mutation login($email: String!, $password: String) {\n    login(email: $email, password: $password) {\n      user {\n        ...UserFields\n        email\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: "\n  mutation signUp($email: String!, $password: String!, $passwordConfirmation: String!, $firstname: String!, $lastname: String!) {\n    signUp(email: $email, password: $password, passwordConfirmation: $passwordConfirmation, firstname: $firstname, lastname: $lastname) {\n      message\n    }\n  }\n",
+): (typeof documents)["\n  mutation signUp($email: String!, $password: String!, $passwordConfirmation: String!, $firstname: String!, $lastname: String!) {\n    signUp(email: $email, password: $password, passwordConfirmation: $passwordConfirmation, firstname: $firstname, lastname: $lastname) {\n      message\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -112,8 +121,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: "\n  mutation Logout {\n    logout\n}",
-): (typeof documents)["\n  mutation Logout {\n    logout\n}"];
+  source: "\n  mutation logout($key: String!) {\n    logout(key: $key)\n}",
+): (typeof documents)["\n  mutation logout($key: String!) {\n    logout(key: $key)\n}"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

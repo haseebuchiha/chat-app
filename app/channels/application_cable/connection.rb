@@ -12,7 +12,7 @@ module ApplicationCable
     protected
 
     def find_verified_user # this checks whether a user is authenticated with devise
-      request.env["warden"].user || UserAuthTokenService.find_user(request.session[:token])
+      request.env["warden"].user
     rescue UncaughtThrowError
       nil
     end

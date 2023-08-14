@@ -4,7 +4,7 @@ import GET_USERS from "./users.graphql";
 import { useMutation, useQuery } from "@apollo/client";
 import Loader from "../../Shared/Components/Loader";
 import { User } from "../../__gql__/graphql";
-import { groupBy, keys, map } from "lodash/fp";
+import { groupBy, keys, map, toString } from "lodash/fp";
 import UserAvatar from "../../Shared/Components/UserAvatar";
 import START_CONVERSATION_MUTATION from "./start-conversation.graphql";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +28,7 @@ const Users: React.FC = () => {
   const [data, setData] = React.useState(queryData);
   const [startConversation] = useMutation(START_CONVERSATION_MUTATION, {
     onCompleted(res) {
-      navigate(`/conversations/${res.startConversation.id}`);
+      navigate(`/conversations/${toString(res.startConversation.id)}`);
       leftNavVar("conversations");
     },
   });

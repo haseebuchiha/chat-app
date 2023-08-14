@@ -1,7 +1,7 @@
 import { gql } from "../../__gql__";
 // import userFields from "./user-fields"
 
-const conversationFields = gql(`
+const CONVERSATION_FIELDS_FRAGMENT = gql(`
   fragment ConversationFields on Conversation {
     id
     createdAt
@@ -15,4 +15,4 @@ const conversationFields = gql(`
   }
   `);
 
-export default conversationFields;
+export default CONVERSATION_FIELDS_FRAGMENT;
