@@ -3,7 +3,7 @@ module Resolvers
     type Types::ConversationType.connection_type, null: false
 
     def authorized?(**args)
-      return true if current_user
+      true if current_user
     end
 
     def resolve(**args)

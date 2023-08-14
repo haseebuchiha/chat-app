@@ -7,7 +7,7 @@ module Mutations
 
     def authorized?(**args)
       @conversation = Conversation.find(args[:conversation_id])
-      return true if current_user && @conversation.user_ids.include?(current_user.id)
+      true if current_user && @conversation.user_ids.include?(current_user.id)
     end
 
     def resolve(**args)
